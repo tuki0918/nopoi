@@ -1,23 +1,30 @@
 <?php
 
-require_once './vendor/autoload.php';
-require_once './N.php';
+require __DIR__ . '/vendor/autoload.php';
 
-$dotenv = new Dotenv\Dotenv(__DIR__);
-$dotenv->load();
+use App\Classes\TimeUpMessage as TimeUp;
+use Dotenv\Dotenv;
+use Maknz\Slack\Client as Slack;
 
 date_default_timezone_set('Asia/Tokyo');
 
-$limit    = getenv('TODO_TIME_LIMIT');
+/**
+ * Environment
+ */
+
+$dotenv = new Dotenv(__DIR__);
+$dotenv->load();
+
+$end      = getenv('TODO_END_TIME');
 $endpoint = getenv('SLACK_ENDPOINT');
 $username = getenv('SLACK_USERNAME');
-$channel  = getenv('SLACK_CHANNEL'); // `#` required
+$channel  = getenv('SLACK_CHANNEL');
 
 /**
  * Message
  */
-$n = new N($limit);
-$message = $n->message();
+$timeUp = new TimeUp($end);
+$message = $timeUp->message();
 
 /**
  * Slack
@@ -27,5 +34,5 @@ $settings = [
     'channel'  => $channel
 ];
 
-$slack = new Maknz\Slack\Client($endpoint, $settings);
+$slack = new Slack($endpoint, $settings);
 $slack->send($message);

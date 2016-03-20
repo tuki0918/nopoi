@@ -1,8 +1,8 @@
 <?php
 
-require_once './M.php';
+namespace App\Classes;
 
-class N extends M
+class TimeUpMessage extends TimeUp
 {
 
     /**
